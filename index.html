@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Risk Yönetimi | Etkileşimli Eğitim</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#020617;
+  --card:#0b1630;
+  --text:#ffffff;
+  --muted:#94a3b8;
+  --accent:#22c55e;
+  --danger:#ef4444;
+  --info:#3b82f6;
+}
+.light{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#020617;
+  --muted:#475569;
+}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.3s;
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+h1{margin:0}
+.toggle-group button{
+  padding:10px 16px;
+  border-radius:20px;
+  border:none;
+  background:var(--card);
+  color:var(--text);
+  cursor:pointer;
+  margin-right:8px;
+}
+.toggle-group .active{
+  background:linear-gradient(135deg,var(--accent),var(--info));
+}
+select,button{
+  padding:10px 14px;
+  border-radius:14px;
+  border:none;
+  background:var(--card);
+  color:var(--text);
+  cursor:pointer;
+}
+.top-controls{
+  margin:20px 0;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.stats{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.stat{
+  background:var(--card);
+  padding:10px 14px;
+  border-radius:14px;
+  font-size:14px;
+}
+.main{
+  display:grid;
+  grid-template-columns:3fr 1.4fr;
+  gap:20px;
+  margin-top:30px;
+}
+.questions .card{
+  background:var(--card);
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:18px;
+}
+.opt{
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;
+}
+.opt.correct{background:#14532d}
+.opt.wrong{background:#7f1d1d}
+.analysis{
+  position:sticky;
+  top:20px;
+  background:var(--card);
+  padding:20px;
+  border-radius:18px;
+}
+.progress{
+  height:8px;
+  background:#020617;
+  border-radius:8px;
+  overflow:hidden;
+  margin:10px 0;
+}
+.bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--info));
+}
+footer{
+  text-align:center;
+  margin-top:40px;
+  opacity:0.6;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Risk Yönetimi · Etkileşimli Eğitim</h1>
+  <div class="toggle-group">
+    <button id="eduBtn" class="active">🎓 Eğitim Modu</button>
+    <button id="cvBtn">👤 Kişisel Profil / CV Modu</button>
+    <button id="themeBtn">🌗</button>
+  </div>
+</header>
+
+<div class="top-controls">
+  <select id="profileSelect">
+    <option value="">Profil Seç</option>
+    <option>Temel</option>
+    <option>ISO</option>
+    <option>Proje</option>
+    <option>İnsan</option>
+    <option>Senaryo</option>
+  </select>
+</div>
+
+<div class="stats">
+  <div class="stat">Toplam: <span id="tTotal">0</span></div>
+  <div class="stat">Doğru: <span id="tCorrect">0</span></div>
+  <div class="stat">Yanlış: <span id="tWrong">0</span></div>
+  <div class="stat">Başarı: <span id="tRate">0%</span></div>
+</div>
+
+<div class="main">
+  <div class="questions" id="questions"></div>
+  <div class="analysis">
+    <h3>Canlı Analiz</h3>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div id="analysisText">Profil seçerek başlayın.</div>
+    <button onclick="speak(currentComment)">🔊 Sesli Yorum</button>
+  </div>
+</div>
+
+<footer>© 2025 · Hazırlayan: Ekrem Şen</footer>
+</div>
+
+<script>
+let mode="edu";
+let answered=0,correct=0;
+let currentComment="";
+
+const QUESTIONS=[
+{profile:"Temel",q:"Risk en doğru nasıl tanımlanır?",o:["Kesin tehdit","Olasılık ve etki","Sadece finansal","Teknik hata"],a:1,e:"Risk olasılık ve etki ile değerlendirilir."},
+{profile:"ISO",q:"ISO 31000 ne sunar?",o:["Sertifika","Risk prensipleri","IT kontrolleri","Denetim"],a:1,e:"ISO 31000 risk yönetimi prensipleri sunar."},
+{profile:"Proje",q:"Risk hangi aşamada yönetilir?",o:["Kapanış","Planlama","Teslim","Test"],a:1,e:"Planlama aşaması kritiktir."},
+{profile:"İnsan",q:"İnsan riskleri neden zordur?",o:["Teknik","Davranış","Bütçe","Süreç"],a:1,e:"Davranışlar öngörülemezdir."},
+{profile:"Senaryo",q:"Tedarikçi iflası hangi risktir?",o:["Finansal","Operasyonel","Uyum","IT"],a:1,e:"Operasyonel risktir."}
+];
+
+function speak(t){
+  if(!t) return;
+  const u=new SpeechSynthesisUtterance(t);
+  u.lang="tr-TR";
+  speechSynthesis.speak(u);
+}
+
+eduBtn.onclick=()=>switchMode("edu");
+cvBtn.onclick=()=>switchMode("cv");
+themeBtn.onclick=()=>document.body.classList.toggle("light");
+
+function switchMode(m){
+  mode=m;
+  eduBtn.classList.toggle("active",m==="edu");
+  cvBtn.classList.toggle("active",m==="cv");
+}
+
+profileSelect.onchange=e=>loadProfile(e.target.value);
+
+function loadProfile(p){
+  answered=0;correct=0;
+  questions.innerHTML="";
+  const qs=QUESTIONS.filter(q=>q.profile===p);
+  tTotal.innerText=qs.length;
+  qs.forEach((q,i)=>{
+    const c=document.createElement("div");
+    c.className="card";
+    c.innerHTML="<h3>"+(i+1)+". "+q.q+"</h3>";
+    q.o.forEach((o,ix)=>{
+      const d=document.createElement("div");
+      d.className="opt";
+      d.innerText=o;
+      d.onclick=()=>{
+        if(d.classList.contains("done"))return;
+        d.classList.add("done");
+        answered++;
+        if(ix===q.a){correct++;d.classList.add("correct");}
+        else d.classList.add("wrong");
+        c.insertAdjacentHTML("beforeend","<p>"+q.e+"</p>");
+        update();
+      };
+      c.appendChild(d);
+    });
+    questions.appendChild(c);
+  });
+}
+
+function update(){
+  tCorrect.innerText=correct;
+  tWrong.innerText=answered-correct;
+  const rate=Math.round((correct/answered)*100)||0;
+  tRate.innerText=rate+"%";
+  bar.style.width=rate+"%";
+  currentComment = mode==="edu"
+    ? (rate<50?"Temel kavramları pekiştirmen önerilir.":"İyi gidiyorsun, senaryo pratiği artırılabilir.")
+    : (rate<50?"Risk farkındalığın gelişmeye açık.":"Profesyonel risk bakış açın güçlü.");
+  analysisText.innerText=currentComment;
+}
+</script>
+</body>
+</html>
