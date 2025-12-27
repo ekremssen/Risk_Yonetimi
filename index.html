@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Risk Yönetimi · Etkileşimli Eğitim (Liste Modu)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg1:#020617;--bg2:#0b1630;
+  --card:rgba(255,255,255,.07);
+  --ok:#22c55e;--bad:#ef4444;
+  --pri:#3b82f6;--sec:#22c55e;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Inter,Arial,sans-serif;color:#fff;
+  background:radial-gradient(circle at top,var(--bg2),var(--bg1));
+}
+.container{max-width:1200px;margin:30px auto;padding:20px}
+h1{margin:0 0 6px 0}
+.sub{opacity:.75;margin-bottom:20px}
+
+.top{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px
+}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.08);padding:8px 14px;border-radius:14px;font-size:14px}
+
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+select{
+  padding:14px 16px;border-radius:16px;border:none;font-size:15px;
+  background:rgba(255,255,255,.08);color:#fff
+}
+
+.list{margin-top:20px}
+.card{
+  background:var(--card);border-radius:22px;padding:24px;margin-bottom:18px;
+}
+.meta{opacity:.7;font-size:13px;margin-bottom:8px}
+.q{font-size:20px;margin-bottom:14px}
+
+.opt{
+  padding:12px;border-radius:12px;margin-top:8px;
+  background:rgba(255,255,255,.05);cursor:pointer
+}
+.opt:hover{background:rgba(255,255,255,.12)}
+.opt.ok{background:rgba(34,197,94,.35)}
+.opt.bad{background:rgba(239,68,68,.45)}
+
+.explain{margin-top:12px;font-size:14px;opacity:.9}
+
+.footer{text-align:center;opacity:.6;margin:40px 0 10px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="top">
+    <div>
+      <h1>Risk Yönetimi · Etkileşimli Eğitim</h1>
+      <div class="sub">Profil seç → tüm sorular aşağıda yüklensin → cevapladıkça analiz oluşsun.</div>
+    </div>
+    <div class="stats">
+      <div class="stat">Toplam: <b id="tTotal">0</b></div>
+      <div class="stat">Doğru: <b id="tOk">0</b></div>
+      <div class="stat">Yanlış: <b id="tBad">0</b></div>
+      <div class="stat">Başarı: <b id="tRate">%0</b></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <select id="profile">
+      <option value="">Profil Seç</option>
+      <option value="Temel">Temel</option>
+      <option value="ISO">ISO / ERM</option>
+      <option value="Proje">Proje</option>
+      <option value="İnsan">İnsan & Kültür</option>
+      <option value="Senaryo">Senaryo</option>
+    </select>
+  </div>
+
+  <div id="questionList" class="list"></div>
+
+  <div class="footer">© 2025 · Hazırlayan: Ekrem Şen</div>
+</div>
+
+<script>
+function speak(t){
+  try{
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='tr-TR';
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+const QUESTIONS = [
+  ...Array.from({length:10},(_,i)=>({profile:"Temel",
+    q:`[Temel ${i+1}] Risk kavramı en doğru nasıl ele alınır?`,
+    o:["Kesin tehdit","Olasılık ve etki","Sadece finansal","Teknik hata"],
+    a:1,
+    e:"Risk, belirsizlik içerir ve olasılık + etki birlikte değerlendirilir."
+  })),
+  ...Array.from({length:10},(_,i)=>({profile:"ISO",
+    q:`[ISO ${i+1}] ISO 31000 neyi ifade eder?`,
+    o:["Denetim","Risk yönetimi çerçevesi","Sertifika","IT standardı"],
+    a:1,
+    e:"ISO 31000 bir sertifika değil, risk yönetimi yaklaşımıdır."
+  })),
+  ...Array.from({length:10},(_,i)=>({profile:"Proje",
+    q:`[Proje ${i+1}] Proje riskleri ne zaman belirlenmelidir?`,
+    o:["Kapanış","Gerçekleşince","Planlama","Teslim sonrası"],
+    a:2,
+    e:"Planlama aşaması riskleri yönetmek için en doğru zamandır."
+  })),
+  ...Array.from({length:10},(_,i)=>({profile:"İnsan",
+    q:`[İnsan ${i+1}] İnsan kaynaklı riskler neden zordur?`,
+    o:["Bütçe","Davranış","Teknoloji","Doküman"],
+    a:1,
+    e:"İnsan davranışları öngörülemez olduğu için risklidir."
+  })),
+  ...Array.from({length:10},(_,i)=>({profile:"Senaryo",
+    q:`[Senaryo ${i+1}] Regülasyon değişikliği hangi risktir?`,
+    o:["Operasyon","Finans","Uyum","İnsan"],
+    a:2,
+    e:"Regülasyon değişiklikleri uyum riskidir."
+  }))
+];
+
+let answered=new Set();
+let ok=0,bad=0,active=[];
+
+const elList=document.getElementById('questionList');
+const tTotal=document.getElementById('tTotal');
+const tOk=document.getElementById('tOk');
+const tBad=document.getElementById('tBad');
+const tRate=document.getElementById('tRate');
+
+function updateStats(){
+  tTotal.textContent=active.length;
+  tOk.textContent=ok;
+  tBad.textContent=bad;
+  const rate=ok+bad?Math.round(ok/(ok+bad)*100):0;
+  tRate.textContent='%'+rate;
+}
+
+document.getElementById('profile').onchange=e=>{
+  const p=e.target.value;
+  elList.innerHTML='';
+  ok=0;bad=0;answered.clear();
+  active=QUESTIONS.filter(q=>q.profile===p);
+  updateStats();
+
+  active.forEach((q,qi)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<div class="meta">${q.profile} · Soru ${qi+1}</div><div class="q">${q.q}</div>`;
+    q.o.forEach((opt,oi)=>{
+      const o=document.createElement('div');
+      o.className='opt';
+      o.textContent=opt;
+      o.onclick=()=>{
+        const key=qi+'-'+oi;
+        if(answered.has(qi)) return;
+        answered.add(qi);
+        if(oi===q.a){
+          o.classList.add('ok'); ok++; speak("Doğru. "+q.e);
+        }else{
+          o.classList.add('bad');
+          card.querySelectorAll('.opt')[q.a].classList.add('ok');
+          bad++; speak("Yanlış. "+q.e);
+        }
+        const exp=document.createElement('div');
+        exp.className='explain';
+        exp.textContent=q.e;
+        card.appendChild(exp);
+        updateStats();
+      };
+      card.appendChild(o);
+    });
+    elList.appendChild(card);
+  });
+};
+</script>
+</body>
+</html>
