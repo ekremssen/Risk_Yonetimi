@@ -1,359 +1,308 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Risk Yönetimi | Çoktan Seçmeli Eğitim (Alan Seçimli + Sesli)</title>
+<meta charset="UTF-8">
+<title>Risk Yönetimi Yetkinlik Analizi</title>
+
 <style>
-:root{
-  --bg:#050816;
-  --panel:rgba(255,255,255,.06);
-  --border:rgba(255,255,255,.12);
-  --text:#e7e9ee;
-  --muted:#aab0bd;
-  --accent:#38bdf8;
-  --good:#22c55e;
-  --bad:#ef4444;
+body {
+  font-family: Arial, sans-serif;
+  background:#0a0f1c;
+  color:#fff;
+  margin:0;
+  padding:0;
 }
-*{box-sizing:border-box;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif}
-body{margin:0;background:radial-gradient(1200px 600px at 20% 10%, rgba(56,189,248,.18), transparent 55%),
-radial-gradient(900px 500px at 80% 20%, rgba(34,197,94,.14), transparent 55%),
-linear-gradient(160deg,#020617,#050816 60%,#020617);color:var(--text);}
-header{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);
-background:rgba(2,6,23,.6);border-bottom:1px solid var(--border);}
-.wrap{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;gap:16px;align-items:center;justify-content:space-between;}
-.brand{display:flex;align-items:center;gap:12px}
-.avatar{width:44px;height:44px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:rgba(255,255,255,.08);}
-.avatar img{width:100%;height:100%;object-fit:cover;display:block}
-h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.2px}
-.sub{font-size:12px;color:var(--muted);line-height:1.35}
-.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.pill{font-size:12px;color:var(--muted);padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);}
-main{max-width:1180px;margin:0 auto;padding:18px 18px 60px;}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:14px 0 18px}
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input[type="search"], select{padding:12px 12px;border-radius:12px;border:1px solid var(--border);
-background:rgba(2,6,23,.55);color:var(--text);}
-input[type="search"]{width:min(440px,100%)} 
-.btn{padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(2,6,23,.55);
-color:var(--text);cursor:pointer}
-.btn:hover{opacity:.92}
-.btn.primary{background:linear-gradient(90deg,#0284c7,#22c55e);border:none}
-.btn.ghost{background:rgba(255,255,255,.04)}
-.card{padding:16px;border-radius:16px;background:var(--panel);border:1px solid var(--border)}
-.qhead{display:flex;gap:12px;align-items:flex-start}
-.qnum{min-width:46px;height:28px;border-radius:999px;display:flex;align-items:center;justify-content:center;
-background:rgba(56,189,248,.16);border:1px solid rgba(56,189,248,.35);color:#7dd3fc;font-weight:700;font-size:12px}
-.qtext{font-size:18px;line-height:1.4}
-.opt{margin-top:12px;display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.12);
-background:rgba(255,255,255,.03);cursor:pointer}
-.opt:hover{border-color:rgba(56,189,248,.35)}
-.opt input{margin-top:4px}
-.opt .ot{font-size:16px;line-height:1.4}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.panel{display:none;margin-top:14px;padding:12px;border-radius:14px;border:1px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
-.panel.show{display:block}
-.rationale{margin-top:10px;border-top:1px solid rgba(255,255,255,.12);padding-top:10px}
-.row{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
-.bad{color:#fecaca} .good{color:#bbf7d0}
-.tag{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted)}
-.small{font-size:12px;color:var(--muted);line-height:1.5}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:980px){.grid{grid-template-columns:1fr}}
-kbd{background:#020617;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:2px 6px;font-size:12px}
-.toast{position:fixed;right:16px;bottom:20px;padding:10px 12px;border-radius:12px;
-background:rgba(2,6,23,.75);border:1px solid var(--border);color:var(--text);display:none;max-width:380px;z-index:30}
-.toast.show{display:block}
+.container {
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+}
+h1,h2 {
+  text-align:center;
+}
+.question {
+  margin-top:30px;
+}
+.options label {
+  display:block;
+  margin:8px 0;
+  cursor:pointer;
+}
+button {
+  margin-top:20px;
+  padding:10px 20px;
+  font-size:16px;
+  cursor:pointer;
+}
+.result {
+  margin-top:30px;
+  padding:20px;
+  background:#111;
+  border-radius:8px;
+}
+.level {
+  opacity:.7;
+  font-size:14px;
+  text-align:center;
+}
 </style>
 </head>
+
 <body>
-<header>
-  <div class="wrap">
-    <div class="brand">
-      <div class="avatar" title="Anlatan kişi (fotoğrafı değiştirilebilir)">
-        <img src="avatar.jpg" alt="Anlatan kişi"/>
-      </div>
-      <div>
-        <h1>Risk Yönetimi · Çoktan Seçmeli Eğitim</h1>
-        <div class="sub">
-          Alan seç → Soruyu oku → Şık seç → <b>Yanıtla</b> → Doğru/Yanlış + nedenleri hem yazılı hem <b>sesli</b> al.  
-          Kısayol: <kbd>N</kbd> (Quiz modunda yeni soru) · <kbd>Space</kbd> sesi durdur.
-        </div>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="pill">Toplam: <b id="total">0</b></div>
-      <div class="pill">✅ Doğru: <b id="cok">0</b></div>
-      <div class="pill">❌ Yanlış: <b id="wok">0</b></div>
-      <div class="pill">Başarı: <b id="rate">0%</b></div>
-    </div>
-  </div>
-</header>
+<div class="container">
 
-<main>
-  <div class="toolbar">
-    <div class="controls">
-      <select id="trackSel"></select>
-      <select id="modeSel">
-        <option value="practice">Pratik (liste)</option>
-        <option value="quiz">Quiz (tek tek)</option>
-      </select>
-      <select id="voiceSel" title="Ses seçimi"></select>
-    </div>
-    <div class="controls">
-      <input id="search" type="search" placeholder="Ara: KRI, appetite, vendor..." oninput="render()"/>
-      <button class="btn" onclick="shuffleBank()">Karıştır</button>
-      <button class="btn" onclick="resetScore()">Skoru Sıfırla</button>
-    </div>
-  </div>
+<h1>Risk Yönetimi Yetkinlik Analizi</h1>
+<p class="level">Senior Mentor Modu</p>
 
-  <div class="small">
-    <span class="tag">Fotoğraf</span> Aynı klasöre kendi fotoğrafını <b>avatar.jpg</b> adıyla koyarsan üstte sen görünür.
-    <span class="tag">Sesli</span> “🔊 Yanıtla (Sesli)” seçimin neden doğru/yanlış olduğunu okur.
-  </div>
+<div id="quiz"></div>
+<button id="nextBtn">Sonraki</button>
+<div id="result"></div>
 
-  <div id="quizHost" style="margin-top:14px;display:none"></div>
-  <div id="listHost" class="grid" style="margin-top:14px"></div>
-</main>
-
-<div id="toast" class="toast"></div>
+</div>
 
 <script>
-const BANK = [{"track": "ERM/Strateji", "q": "Risk en doğru hangi ifade ile tanımlanır?", "opts": [{"t": "Olumsuz bir olayın kesin gerçekleşmesi.", "ok": false, "why": "Yanlış: Risk kesinlik içermez; olasılık vardır. Kesin gerçekleşecek durum artık ‘issue’/planlama konusudur."}, {"t": "Olasılık ile etkinin birlikte değerlendirilmesi.", "ok": true, "why": "Doğru: Risk, olasılık ve etkinin birlikte değerlendirilmesidir; önceliklendirme bu iki boyutla yapılır."}, {"t": "Sadece finansal kayıpları ifade eder.", "ok": false, "why": "Yanlış: Risk; finansal, operasyonel, itibar, uyum, güvenlik gibi farklı etki türlerini kapsar."}, {"t": "Sadece teknik sistem hatalarını kapsar.", "ok": false, "why": "Yanlış: Riskin kaynağı teknik olabilir ama risk yönetimi insan/süreç/tedarikçi/regülasyon boyutlarını da içerir."}]}, {"track": "ERM/Strateji", "q": "ISO 31000 için en doğru ifade hangisidir?", "opts": [{"t": "Sertifika zorunluluğu olan denetim standardıdır.", "ok": false, "why": "Yanlış: ISO 31000 bir ‘rehber’dir; prensipler, çerçeve ve süreç önerir; kurum bağlamına göre uyarlanır."}, {"t": "Her organizasyon için risk yönetiminde prensip, çerçeve ve süreç önerir.", "ok": true, "why": "Doğru: ISO 31000 yaklaşımı ‘principles + framework + process’ şeklinde ele alınır ve ölçeklenebilir."}, {"t": "Yalnız bilgi güvenliği riskleri içindir.", "ok": false, "why": "Yanlış: ISO 31000 kurumsal genel risk yönetimidir; BT güvenliğiyle sınırlı değildir."}, {"t": "Sadece proje riskleri için kullanılır.", "ok": false, "why": "Yanlış: Projelerde uygulanır ama kapsamı organizasyon geneli/stratejidir."}]}, {"track": "ERM/Strateji", "q": "COSO ERM (2017) çerçevesinin 5 bileşeni hangisidir?", "opts": [{"t": "Planlama, Uygulama, Test, Yayın, İzleme", "ok": false, "why": "Yanlış: Bu yazılım yaşam döngüsüne benzer; COSO ERM bileşenleri yönetişim/strateji/performance odaklıdır."}, {"t": "Governance & Culture; Strategy & Objective-Setting; Performance; Review & Revision; Information, Communication & Reporting", "ok": true, "why": "Doğru: COSO ERM 2017’nin 5 bileşeni bu şekilde adlandırılır."}, {"t": "Kimlik, Erişim, Şifreleme, Loglama, Yedekleme", "ok": false, "why": "Yanlış: Bunlar güvenlik kontrol alanlarıdır; ERM bileşenleri değildir."}, {"t": "Risk Kaydı, Risk Matrisi, KRI, KPI, SLA", "ok": false, "why": "Yanlış: Bunlar araç/çıktıdır; çerçevenin bileşeni değildir."}]}, {"track": "Proje", "q": "Proje riskleri ile issue (problem) arasındaki doğru fark hangisidir?", "opts": [{"t": "Issue gelecekte olabilir; risk geçmişte olmuştur.", "ok": false, "why": "Yanlış: Tersidir. Risk gelecekte olabilir; issue gerçekleşmiştir."}, {"t": "Risk gelecekte olabilir; issue gerçekleşmiştir.", "ok": true, "why": "Doğru: Risk olasılık içerir; issue artık çözüm planı gerektiren gerçekleşmiş olaydır."}, {"t": "Risk sadece teknik; issue sadece iş tarafıdır.", "ok": false, "why": "Yanlış: Her ikisi de teknik/iş/operasyon kaynaklı olabilir."}, {"t": "Risk sadece bütçe; issue sadece zaman planıdır.", "ok": false, "why": "Yanlış: İkisi de kapsam, kalite, itibar, uyum gibi alanları etkileyebilir."}]}, {"track": "İnsan", "q": "Risk kültürünün güçlü olduğuna dair en iyi işaret hangisidir?", "opts": [{"t": "Risk konuşanların cezalandırılması.", "ok": false, "why": "Yanlış: Bu ‘sessiz risk’ üretir; sorunlar gizlenir."}, {"t": "Near-miss ve risklerin hızlı, suçlamadan raporlanması (speak-up).", "ok": true, "why": "Doğru: Konuşulabilirlik ve hızlı raporlama risk kültürünün çekirdeğidir."}, {"t": "Yalnız yıllık denetim raporları üretmek.", "ok": false, "why": "Yanlış: Denetim önemli ama kültür günlük reflekslerle ölçülür."}, {"t": "Hiç incident yaşanmaması.", "ok": false, "why": "Yanlış: ‘Hiç’ gerçekçi değildir; bazen raporlanmıyordur."}]}, {"track": "Operasyon", "q": "Operasyonel risklerde ‘KRI’ ne işe yarar?", "opts": [{"t": "Performans hedefini ölçer.", "ok": false, "why": "Yanlış: Bu KPI’dır. KRI erken uyarı sinyalidir."}, {"t": "Riskin yükseldiğini erken haber verir ve eşik aşımında aksiyon tetikler.", "ok": true, "why": "Doğru: KRI, riskin büyüdüğünü ‘olay olmadan’ görmeyi sağlar."}, {"t": "Sadece denetimde kullanılır.", "ok": false, "why": "Yanlış: Asıl kullanım günlük izleme ve aksiyon tetiklemedir."}, {"t": "Sadece finans departmanı takip eder.", "ok": false, "why": "Yanlış: KRI’lar süreç sahibine ve yönetime görünür olmalıdır."}]}, {"track": "BT/Güvenlik", "q": "NIST yaklaşımıyla tipik risk faktörleri hangilerini içerir?", "opts": [{"t": "Tehdit, zafiyet, olasılık, etki ve bağlamsal (predisposing) koşullar.", "ok": true, "why": "Doğru: Risk faktörleri bu bileşenlerle açıklanır; kurum bunları dokümante etmelidir."}, {"t": "Sadece şifreleme ve firewall.", "ok": false, "why": "Yanlış: Bunlar kontrol örnekleridir; risk faktörü seti değildir."}, {"t": "Sadece ‘tehdit’ yeterlidir.", "ok": false, "why": "Yanlış: Tehdit tek başına risk değildir; zafiyet + olasılık + etki ile anlam kazanır."}, {"t": "Sadece finansal kayıp.", "ok": false, "why": "Yanlış: Güvenlikte etki gizlilik, bütünlük, erişilebilirlik ve itibar boyutlarını içerir."}]}, {"track": "Tedarikçi/Vendor", "q": "Tedarikçi (vendor) riski için en doğru yaklaşım hangisidir?", "opts": [{"t": "Sözleşme imzalanınca risk biter.", "ok": false, "why": "Yanlış: Sözleşme başlangıçtır; SLA izleme, denetim hakkı, BCP ve ölçüm gerekir."}, {"t": "SLA + KRI’lar + düzenli performans review + exit plan (alternatif) birlikte tasarlanmalıdır.", "ok": true, "why": "Doğru: Vendor riskini azaltmak için ölçüm, yönetişim ve çıkış stratejisi şarttır."}, {"t": "Vendor hatası olursa müşteriyle iletişim kurmayız.", "ok": false, "why": "Yanlış: İletişim/itibar yönetimi kritik; kullanıcıya şeffaf ve yönlendirici bilgi verilmeli."}, {"t": "Sadece fiyat pazarlığı yapmak yeterlidir.", "ok": false, "why": "Yanlış: En ucuz çözüm en pahalı riski doğurabilir; dayanıklılık ve uyum şart."}]}, {"track": "Proje", "q": "Pre-mortem tekniğinin amacı nedir?", "opts": [{"t": "Projeyi başarı hikayesine çevirmek için motivasyon sunumu yapmak.", "ok": false, "why": "Yanlış: Bu iletişim tekniği olabilir; pre-mortem değildir."}, {"t": "Proje ‘başarısız oldu’ varsayımıyla nedenleri önden bulup önlem üretmek.", "ok": true, "why": "Doğru: Başarısızlık sebeplerini erken çıkarıp mitigasyon üretir."}, {"t": "Sadece teknik penetrasyon testi yapmak.", "ok": false, "why": "Yanlış: Teknik test bir araçtır; pre-mortem çok disiplinli senaryo çalışmasıdır."}, {"t": "Yalnız retrospektif toplantısı yapmak.", "ok": false, "why": "Yanlış: Retrospektif geçmişe bakar; pre-mortem gelecekteki başarısızlığı simüle eder."}]}, {"track": "İnsan", "q": "‘Tek kişi bağımlılığı’ (key person risk) en iyi nasıl azaltılır?", "opts": [{"t": "O kişiyi daha çok iş yüküyle ödüllendirerek.", "ok": false, "why": "Yanlış: Risk büyür; bilgi daha da tek kişide kilitlenir."}, {"t": "Dokümantasyon + gölge çalışma + rotasyon + yedekleme planıyla.", "ok": true, "why": "Doğru: Bilgi tek kişiden çıkarılıp süreç haline getirildiğinde risk düşer."}, {"t": "Konuyu hiç konuşmayarak.", "ok": false, "why": "Yanlış: Sessiz risk üretir."}, {"t": "Sadece prim vermekle.", "ok": false, "why": "Yanlış: Motivasyon önemli ama risk kontrolü süreç ister."}]}, {"track": "BT/Güvenlik", "q": "Üç Hat Modelinde (Three Lines) 1. hattın rolü nedir?", "opts": [{"t": "Bağımsız denetim yapmak.", "ok": false, "why": "Yanlış: Bu 3. hattır (internal audit)."}, {"t": "Günlük operasyon içinde riski sahiplenmek ve yönetmek.", "ok": true, "why": "Doğru: 1. hat riskin sahibidir; kontrolleri uygular."}, {"t": "Sadece politika yazmak.", "ok": false, "why": "Yanlış: Çoğunlukla 2. hat politika/standart üretir."}, {"t": "Yalnız raporlama yapmak.", "ok": false, "why": "Yanlış: Raporlama yardımcıdır; asıl sorumluluk risk yönetimidir."}]}, {"track": "ERM/Strateji", "q": "Risk appetite ile risk tolerance arasındaki fark nedir?", "opts": [{"t": "Aynı kavramdır.", "ok": false, "why": "Yanlış: Appetite genel isteklilik; tolerance hedef bazlı kabul edilebilir sapma aralığıdır."}, {"t": "Appetite genel yön; tolerance limit/eşiklerle günlük karara çevrilen sapma aralığıdır.", "ok": true, "why": "Doğru: Tolerans, appetite’in operasyonel karşılığıdır."}, {"t": "Tolerance sadece denetim terimidir.", "ok": false, "why": "Yanlış: Tolerance günlük eşik/limitlere dönüşmelidir."}, {"t": "Appetite sadece BT, tolerance sadece finans içindir.", "ok": false, "why": "Yanlış: İkisi de kurumsal tüm alanları kapsar."}]}];
-let correct=0, wrong=0;
+const questions = [
 
-function toast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1800); }
-function updStats(total){
-  document.getElementById('total').innerText = total;
-  document.getElementById('cok').innerText = correct;
-  document.getElementById('wok').innerText = wrong;
-  const done = correct + wrong;
-  document.getElementById('rate').innerText = done ? Math.round((correct/done)*100) + '%' : '0%';
+/* =========================
+   SEVİYE 1 – TEMEL (ÖRNEKLER)
+========================= */
+
+{
+ level:1,
+ q:"Risk en doğru şekilde nasıl tanımlanır?",
+ o:[
+  "Olumsuz olayın kesinleşmesi",
+  "Olasılık ve etkinin birlikte değerlendirilmesi",
+  "Sadece finansal kayıp",
+  "Teknik hata"
+ ],
+ a:1
+},
+{
+ level:1,
+ q:"Risk ile problem arasındaki temel fark nedir?",
+ o:[
+  "Risk geleceğe, problem geçmişe aittir",
+  "Risk sadece projelerde olur",
+  "Problem yönetilemez",
+  "Risk sadece negatiftir"
+ ],
+ a:0
+},
+{
+ level:1,
+ q:"Düşük olasılık – yüksek etki riski nasıl ele alınmalıdır?",
+ o:[
+  "Önemsizdir",
+  "Göz ardı edilir",
+  "Kritik risk olarak ele alınır",
+  "Risk değildir"
+ ],
+ a:2
+},
+{
+ level:1,
+ q:"Risk yönetimi hangi soruya cevap verir?",
+ o:[
+  "Ne oldu?",
+  "Neden oldu?",
+  "Olursa ne olur?",
+  "Kim yaptı?"
+ ],
+ a:2
+},
+
+/* =========================
+   SEVİYE 2 – FRAMEWORK
+========================= */
+
+{
+ level:2,
+ q:"ISO 31000 aşağıdakilerden hangisidir?",
+ o:[
+  "Sertifika standardı",
+  "Denetim zorunluluğu",
+  "Risk yönetimi prensip ve çerçevesi",
+  "Sadece IT riskleri için"
+ ],
+ a:2
+},
+{
+ level:2,
+ q:"Risk appetite neyi ifade eder?",
+ o:[
+  "Maksimum zarar",
+  "Kurumun almaya istekli olduğu risk seviyesi",
+  "Tüm risklerin toplamı",
+  "Risk toleransı ile aynıdır"
+ ],
+ a:1
+},
+{
+ level:2,
+ q:"Risk appetite – risk tolerance farkı nedir?",
+ o:[
+  "Aynıdır",
+  "Appetite stratejik, tolerance operasyoneldir",
+  "Tolerance daha geniştir",
+  "Appetite ölçülemez"
+ ],
+ a:1
+},
+
+/* =========================
+   SEVİYE 3 – PROJE & ÜRÜN
+========================= */
+
+{
+ level:3,
+ q:"Scope creep hangi risk türüdür?",
+ o:[
+  "Teknik",
+  "Finansal",
+  "Proje riski",
+  "İnsan riski"
+ ],
+ a:2
+},
+{
+ level:3,
+ q:"Vendor lock-in neyi ifade eder?",
+ o:[
+  "Teknik borç",
+  "Tedarikçiye bağımlılık riski",
+  "Regülasyon riski",
+  "İnsan riski"
+ ],
+ a:1
+},
+{
+ level:3,
+ q:"Go-live aşamasındaki en büyük risk nedir?",
+ o:[
+  "Dokümantasyon",
+  "Zaman baskısı",
+  "Test eksikliği",
+  "Tüm cevaplar"
+ ],
+ a:3
+},
+
+/* =========================
+   SEVİYE 4 – İNSAN & ORG.
+========================= */
+
+{
+ level:4,
+ q:"Key person risk nedir?",
+ o:[
+  "Yönetici baskısı",
+  "Bilginin tek kişide olması",
+  "Performans düşüklüğü",
+  "İletişim problemi"
+ ],
+ a:1
+},
+{
+ level:4,
+ q:"Karar gecikmesi hangi riski doğurur?",
+ o:[
+  "Operasyonel",
+  "Teknik",
+  "Stratejik",
+  "Finansal"
+ ],
+ a:2
+},
+{
+ level:4,
+ q:"Sessiz ekipler hangi riski büyütür?",
+ o:[
+  "Finansal",
+  "İletişim ve erken uyarı riski",
+  "Teknik",
+  "Regülasyon"
+ ],
+ a:1
+},
+
+/* =========================
+   SEVİYE 5 – SENARYO
+========================= */
+
+{
+ level:5,
+ q:"Regülasyonu belirsiz bir projede en doğru yaklaşım nedir?",
+ o:[
+  "Beklemek",
+  "Görmezden gelmek",
+  "Senaryo bazlı analiz yapmak",
+  "Projeyi iptal etmek"
+ ],
+ a:2
+},
+{
+ level:5,
+ q:"Yönetimin riskleri sürekli küçümsemesi neyi gösterir?",
+ o:[
+  "Yüksek risk iştahı",
+  "Risk körlüğü",
+  "Güçlü liderlik",
+  "Olgun risk kültürü"
+ ],
+ a:1
 }
 
-// TTS
-let voices=[], currentVoice=null;
-function loadVoices(){
-  voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-  const sel = document.getElementById('voiceSel');
-  sel.innerHTML = '';
-  if(!voices.length){ sel.innerHTML = '<option>Ses yok</option>'; return; }
-  const sorted = [...voices].sort((a,b)=>{
-    const at = (a.lang||'').toLowerCase().startsWith('tr') ? 0 : 1;
-    const bt = (b.lang||'').toLowerCase().startsWith('tr') ? 0 : 1;
-    return at-bt;
-  });
-  sorted.forEach(v=>{
-    const opt = document.createElement('option');
-    opt.value = v.name;
-    opt.textContent = `${v.name} (${v.lang})`;
-    sel.appendChild(opt);
-  });
-  sel.onchange = ()=>{ currentVoice = voices.find(v=>v.name===sel.value) || null; toast("Ses seçildi."); };
-  sel.value = sorted[0].name;
-  currentVoice = voices.find(v=>v.name===sel.value) || null;
-}
-if(window.speechSynthesis){ loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+]; // AYNI FORMATLA 110 SORUYA KADAR EKLENİR
 
-function speak(text){
-  if(!window.speechSynthesis){ toast("Sesli okuma desteklenmiyor."); return; }
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  if(currentVoice) u.voice = currentVoice;
-  u.lang = currentVoice?.lang || 'tr-TR';
-  u.rate = 1.0; u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
-}
-document.addEventListener('keydown', (e)=>{ if(e.code==='Space'){ window.speechSynthesis?.cancel(); toast("Ses durduruldu."); } });
+let i=0, score=0;
 
-function uniqTracks(){
-  return ["Tümü", ...Array.from(new Set(BANK.map(x=>x.track)))];
-}
-function buildSelectors(){
-  const ts = document.getElementById('trackSel');
-  ts.innerHTML='';
-  uniqTracks().forEach(t=>{
-    const o=document.createElement('option');
-    o.value=t; o.textContent=t;
-    ts.appendChild(o);
-  });
-  ts.onchange = ()=>render();
-  document.getElementById('modeSel').onchange = ()=>render();
-}
-buildSelectors();
+const quiz = document.getElementById("quiz");
+const btn = document.getElementById("nextBtn");
 
-function getFiltered(){
-  const track = document.getElementById('trackSel').value;
-  const q = document.getElementById('search').value.toLowerCase().trim();
-  return BANK.filter(x=> (track==="Tümü" || x.track===track) && (q==="" || (x.q+" "+x.opts.map(o=>o.t).join(" ")).toLowerCase().includes(q)));
+load();
+
+function load(){
+ const q = questions[i];
+ quiz.innerHTML = `
+ <div class="question">
+ <div class="level">Seviye ${q.level}</div>
+ <h2>${q.q}</h2>
+ <div class="options">
+ ${q.o.map((x,idx)=>`
+  <label>
+   <input type="radio" name="opt" value="${idx}"> ${x}
+  </label>`).join("")}
+ </div>
+ </div>`;
 }
 
-function optionRow(opt, idx, name){
-  return `<label class="opt"><input type="radio" name="${name}" value="${idx}"/><div class="ot">${opt.t}</div></label>`;
+btn.onclick = ()=>{
+ const sel = document.querySelector("input[name='opt']:checked");
+ if(!sel) return;
+ if(+sel.value === questions[i].a) score++;
+ i++;
+ if(i<questions.length) load();
+ else finish();
+};
+
+function finish(){
+ const p = Math.round(score/questions.length*100);
+ let msg="";
+ if(p<30) msg="Temel risk farkındalığı zayıf. Kavramları yeniden çalış.";
+ else if(p<55) msg="Teorik bilgi var, uygulama zayıf.";
+ else if(p<75) msg="Uygulama yetkinliği iyi, kurumsal risk dili geliştirilmeli.";
+ else if(p<90) msg="Senior seviye. Stratejik risk tarafına geçebilirsin.";
+ else msg="Risk lideri bakış açısı. Mentorluk seviyesindesin.";
+
+ quiz.innerHTML = `
+ <div class="result">
+ <h2>Skor: ${p}%</h2>
+ <p>${msg}</p>
+ </div>`;
+ btn.style.display="none";
 }
-
-function buildExplanation(item, chosenIdx){
-  const correctIdx = item.opts.findIndex(o=>o.ok);
-  const chosen = item.opts[chosenIdx];
-  const isCorrect = chosenIdx===correctIdx;
-
-  let html = `<div><span class="tag">${isCorrect?'✅ Doğru':'❌ Yanlış'}</span>
-    <span class="tag">Doğru Şık: ${String.fromCharCode(65+correctIdx)}</span></div>`;
-
-  html += `<div class="rationale">
-    <div class="row"><b>Seçimin:</b> ${String.fromCharCode(65+chosenIdx)}) ${chosen.t}</div>
-    <div class="row ${isCorrect?'good':'bad'}">${isCorrect?'Neden doğru?':'Neden yanlış?'} ${chosen.why}</div>
-    ${!isCorrect ? `<div class="row good"><b>Doğru neden doğru?</b> ${item.opts[correctIdx].why}</div>` : ''}
-    <div class="row"><b>Tüm şıklar – açıklama:</b></div>
-    ${item.opts.map((o,idx)=>`<div class="row ${o.ok?'good':'bad'}"><div style="min-width:44px"><b>${String.fromCharCode(65+idx)})</b> ${o.ok?'✅':'❌'}</div><div>${o.why}</div></div>`).join('')}
-  </div>`;
-
-  return { html, correctIdx, isCorrect };
-}
-
-function renderPractice(items){
-  document.getElementById('quizHost').style.display='none';
-  const host = document.getElementById('listHost');
-  host.style.display='grid';
-
-  host.innerHTML = items.map((item, i)=>{
-    const name = `q_${i}`;
-    const opts = item.opts.map((o,idx)=>optionRow(o,idx,name)).join('');
-    return `<div class="card">
-      <div class="qhead">
-        <div class="qnum">S${String(i+1).padStart(2,'0')}</div>
-        <div class="qtext">${item.q}<div class="small"><span class="tag">${item.track}</span></div></div>
-      </div>
-      <div class="opts">${opts}</div>
-      <div class="actions">
-        <button class="btn primary" onclick="answerPractice(${i}, '${name}', false)">Yanıtla</button>
-        <button class="btn ghost" onclick="answerPractice(${i}, '${name}', true)">🔊 Yanıtla (Sesli)</button>
-      </div>
-      <div class="panel" id="panel_${i}"></div>
-    </div>`;
-  }).join('');
-
-  updStats(items.length);
-}
-
-function answerPractice(i, name, doSpeak){
-  const items = getFiltered();
-  const item = items[i];
-  const radios = document.getElementsByName(name);
-  let chosenIdx = -1;
-  radios.forEach(r=>{ if(r.checked) chosenIdx = parseInt(r.value,10); });
-  if(chosenIdx<0){ toast("Önce bir şık seç."); return; }
-
-  const ex = buildExplanation(item, chosenIdx);
-  const panel = document.getElementById('panel_'+i);
-  panel.innerHTML = ex.html;
-  panel.classList.add('show');
-
-  if(ex.isCorrect) correct++; else wrong++;
-  updStats(items.length);
-
-  if(doSpeak){
-    const correctIdx = ex.correctIdx;
-    const chosen = item.opts[chosenIdx];
-    const msg = `${item.q}. Seçimin ${String.fromCharCode(65+chosenIdx)}. ` +
-      (ex.isCorrect ? `Doğru. ${chosen.why}` : `Yanlış. ${chosen.why}. Doğru seçenek ${String.fromCharCode(65+correctIdx)}. ${item.opts[correctIdx].why}`);
-    speak(msg);
-  }
-}
-
-// Quiz mode
-let quizItems = [];
-let quizIndex = 0;
-
-function renderQuiz(items){
-  quizItems = items;
-  document.getElementById('listHost').style.display='none';
-  const host = document.getElementById('quizHost');
-  host.style.display='block';
-
-  if(!items.length){
-    host.innerHTML = '<div class="card">Sonuç yok.</div>';
-    updStats(0);
-    return;
-  }
-
-  quizIndex = Math.max(0, Math.min(quizIndex, items.length-1));
-  const item = items[quizIndex];
-  const name = 'quiz_q';
-  const opts = item.opts.map((o,idx)=>optionRow(o,idx,name)).join('');
-
-  host.innerHTML = `<div class="card">
-    <div class="qhead">
-      <div class="qnum">Q</div>
-      <div class="qtext">${item.q}
-        <div class="small"><span class="tag">${item.track}</span> <span class="tag">${quizIndex+1} / ${items.length}</span></div>
-      </div>
-    </div>
-    <div class="opts">${opts}</div>
-    <div class="actions">
-      <button class="btn primary" onclick="answerQuiz(false)">Yanıtla</button>
-      <button class="btn ghost" onclick="answerQuiz(true)">🔊 Yanıtla (Sesli)</button>
-      <button class="btn" onclick="nextQuiz()">Yeni Soru</button>
-    </div>
-    <div class="panel" id="quizPanel"></div>
-  </div>`;
-
-  updStats(items.length);
-}
-
-function answerQuiz(doSpeak){
-  const item = quizItems[quizIndex];
-  const radios = document.getElementsByName('quiz_q');
-  let chosenIdx = -1;
-  radios.forEach(r=>{ if(r.checked) chosenIdx = parseInt(r.value,10); });
-  if(chosenIdx<0){ toast("Önce bir şık seç."); return; }
-
-  const ex = buildExplanation(item, chosenIdx);
-  const panel = document.getElementById('quizPanel');
-  panel.innerHTML = ex.html;
-  panel.classList.add('show');
-
-  if(ex.isCorrect) correct++; else wrong++;
-  updStats(quizItems.length);
-
-  if(doSpeak){
-    const correctIdx = ex.correctIdx;
-    const chosen = item.opts[chosenIdx];
-    const msg = `${item.q}. Seçimin ${String.fromCharCode(65+chosenIdx)}. ` +
-      (ex.isCorrect ? `Doğru. ${chosen.why}` : `Yanlış. ${chosen.why}. Doğru seçenek ${String.fromCharCode(65+correctIdx)}. ${item.opts[correctIdx].why}`);
-    speak(msg);
-  }
-}
-
-function nextQuiz(){
-  if(!quizItems.length) return;
-  quizIndex = (quizIndex + 1) % quizItems.length;
-  renderQuiz(quizItems);
-}
-
-document.addEventListener('keydown', (e)=>{
-  if(e.key.toLowerCase()==='n' && document.getElementById('modeSel').value==='quiz'){
-    nextQuiz();
-  }
-});
-
-function shuffleBank(){
-  for(let i=BANK.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [BANK[i],BANK[j]] = [BANK[j],BANK[i]];
-  }
-  render();
-}
-
-function resetScore(){ correct=0; wrong=0; render(); toast("Skor sıfırlandı."); }
-
-function render(){
-  const items = getFiltered();
-  const mode = document.getElementById('modeSel').value;
-  if(mode==='quiz') renderQuiz(items);
-  else renderPractice(items);
-}
-render();
 </script>
+
 </body>
 </html>
